@@ -10,6 +10,7 @@
  const previous=document.querySelector('#previous-slide'), next=document.querySelector('#next-slide');
  const nightAmbience=window.createNightAmbience({frame});
  let active=-1, scheduled=false, ready=false, lastWheel=0, consumed=false, wheelSum=0, lockedUntil=0, interacting=false;
+ let resizing=false,layoutHeight=innerHeight,layoutWidth=innerWidth;
  const headerHeight=()=>metrics.header;
  const isDialogOpen=()=>!!document.querySelector('dialog[open]')||embeds.some(embed=>!!embed.contentDocument?.querySelector('dialog[open]'));
  function post(data){frame.contentWindow?.postMessage({source:'qianmu-report',...data},location.origin)}
@@ -43,11 +44,12 @@
   window.dispatchEvent(new CustomEvent('report:slidechange',{detail:{key,navKey,index}}));
  }
  function updateActive(){
-  scheduled=false;const probe=scrollY+headerHeight()+Math.min((innerHeight-headerHeight())*.4,300);
+  scheduled=false;if(resizing||window.REPORT_FULLSCREEN?.active())return;const probe=scrollY+headerHeight()+Math.min((innerHeight-headerHeight())*.4,300);
   let index=metrics.tops.findLastIndex(top=>top<=probe);
   if(index<0)index=0;activate(index);syncModel();
  }
  function go(key,{instant=false,focus=false}={}){
+  if(window.REPORT_FULLSCREEN?.active())return;
   const index=slides.findIndex(slide=>slide.dataset.slideId===key);if(index<0)return;
   stopInteractions();if(['02','10'].includes(slides[index].dataset.modelChapter))ensureModel();
   const top=Math.max(0,metrics.tops[index]-headerHeight());
@@ -85,8 +87,32 @@
   else if(data.type==='interaction'&&(embed===frame?slides[active]?.dataset.modelChapter===placedChapter:slides[active]?.dataset.modelChapter===embed.dataset.planChapter)){interacting=!!data.enabled;document.body.classList.toggle('model-interacting',interacting);}
  });
  for(const embed of embeds)embed.addEventListener('load',()=>syncModel(true));
- function measure(){metrics.header=document.querySelector('.site-header').getBoundingClientRect().height;metrics.footer=document.querySelector('.site-footer').getBoundingClientRect().height;const compactLandscape=document.documentElement.dataset.mobileReport==='true'&&innerWidth>innerHeight&&innerHeight<=600;const height=Math.max(compactLandscape?170:desktop.matches?520:450,innerHeight-metrics.header-metrics.footer);document.documentElement.style.setProperty('--slide-height',height+'px');metrics.tops=slides.map(slide=>scrollY+slide.getBoundingClientRect().top);modelLayer.style.top=(metrics.tops[slides.findIndex(slide=>slide.dataset.modelChapter===placedChapter)]-metrics.tops[slides.indexOf(heavySlides[0])])+'px';}
- let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{const key=slides[Math.max(active,0)].dataset.slideId;measure();go(key,{instant:true})},150)});
+ function measure(){metrics.header=document.querySelector('.site-header').getBoundingClientRect().height;metrics.footer=document.querySelector('.site-footer').getBoundingClientRect().height;const compactLandscape=document.documentElement.dataset.mobileReport==='true'&&innerWidth>innerHeight&&innerHeight<=600;const height=Math.max(compactLandscape?170:desktop.matches?520:450,layoutHeight-metrics.header-metrics.footer);document.documentElement.style.setProperty('--slide-height',height+'px');metrics.tops=slides.map(slide=>scrollY+slide.getBoundingClientRect().top);modelLayer.style.top=(metrics.tops[slides.findIndex(slide=>slide.dataset.modelChapter===placedChapter)]-metrics.tops[slides.indexOf(heavySlides[0])])+'px';}
+ let resizeTimer,resizeAnchor=null;
+ function readingAnchor(){const index=Math.max(active,0);return{key:slides[index].dataset.slideId,offset:-slides[index].getBoundingClientRect().top};}
+ function reflow(anchor){
+  if(!anchor)return;clearTimeout(resizeTimer);
+  layoutHeight=innerWidth!==layoutWidth||desktop.matches?innerHeight:layoutHeight;layoutWidth=innerWidth;
+  measure();const index=slides.findIndex(slide=>slide.dataset.slideId===anchor.key);
+  if(index>=0){const offset=Math.min(anchor.offset,Math.max(-metrics.header,slides[index].offsetHeight-metrics.header-30));window.scrollTo({top:Math.max(0,metrics.tops[index]+offset),behavior:'instant'});activate(index);}
+  resizing=false;resizeAnchor=null;syncModel(true);
+ }
+ window.addEventListener('resize',()=>{
+  if(window.REPORT_FULLSCREEN?.active())return;
+  // Browser chrome changes height during a swipe. Never seek the document while
+  // that gesture is in progress; keep the stable chapter height and read metrics.
+  if(document.documentElement.dataset.mobileReport==='true'&&innerWidth===layoutWidth&&!resizeAnchor){
+   clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{measure();updateActive();syncModel(true);},150);return;
+  }
+  if(!resizeAnchor)resizeAnchor=readingAnchor();resizing=true;clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>reflow(resizeAnchor),150);
+ });
+ window.addEventListener('report:fullscreenchange',event=>{
+  clearTimeout(resizeTimer);resizeAnchor=null;
+  if(event.detail.active){resizing=false;return;}
+  resizing=true;
+  const anchor=event.detail.anchor;requestAnimationFrame(()=>reflow(anchor));
+ });
  window.VERTICAL_REPORT={go,ambience:nightAmbience,inspect:()=>({active:slides[active]?.dataset.slideId,index:active,slides:slides.map(s=>s.dataset.slideId),ready,interacting,scrolling,modelChapter:placedChapter,modelLoaded:!!frame.getAttribute('src'),planFrames:plans.length,desktop:desktop.matches})};
  window.addEventListener('pageshow',event=>{if(event.persisted){measure();go('cover',{instant:true});}});
  measure();requestAnimationFrame(()=>go('cover',{instant:true}));

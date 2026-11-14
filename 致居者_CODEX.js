@@ -7,7 +7,7 @@
  const overlay=section.querySelector('[data-letter-overlay]'),message=section.querySelector('[data-letter-message]'),clock=section.querySelector('[data-letter-time]'),live=section.querySelector('[data-letter-live]');
  const screen=section.querySelector('[data-letter-screen]');
  let loaded=false,started=false,pending=false,intent=0,state='intro';
- const active=()=>document.body.dataset.activeSlide==='closing';
+ const active=()=>document.body.dataset.activeSlide==='closing'||window.REPORT_FULLSCREEN?.owns(video);
  const format=value=>{const n=Math.max(0,Math.floor(Number.isFinite(value)?value:0));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')};
  function bilingual(el,zh,en){el.replaceChildren(document.createTextNode(zh));const small=document.createElement('small');small.lang='en';small.textContent=en;el.append(small)}
  function status(zh,en){bilingual(message,zh,en)}
@@ -68,12 +68,7 @@
  video.addEventListener('volumechange',()=>{sync();if(!video.paused)playbackStatus()});
  video.addEventListener('error',()=>{intent++;pending=false;status('寄语未能载入，请点击重试','THE NOTE COULD NOT LOAD · PLEASE TRY AGAIN');sync()});
  section.querySelector('[data-letter-fullscreen]').addEventListener('click',async()=>{
-  try{
-   if(document.fullscreenElement===screen)await document.exitFullscreen();
-   else if(screen.requestFullscreen)await screen.requestFullscreen();
-   else if(typeof video.webkitEnterFullscreen==='function')video.webkitEnterFullscreen();
-   else status('此设备暂不支持全屏，可横屏欣赏','FULL SCREEN IS UNAVAILABLE · TRY LANDSCAPE');
-  }catch{status('此设备暂不支持全屏，可横屏欣赏','FULL SCREEN IS UNAVAILABLE · TRY LANDSCAPE')}
+  if(!await window.REPORT_FULLSCREEN.toggle(screen,video))status('请使用播放器的全屏按钮','PLEASE USE THE PLAYER FULL-SCREEN BUTTON');
  });
  window.addEventListener('report:slidechange',()=>{if(!active())pause();else if(started&&state==='playback'&&!video.ended)play()});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else if(active()&&started&&state==='playback'&&!video.ended)play()});

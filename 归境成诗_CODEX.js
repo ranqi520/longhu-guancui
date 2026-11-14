@@ -7,7 +7,7 @@
  const toggle=section.querySelector('[data-film-toggle]'),fullscreen=section.querySelector('[data-film-fullscreen]'),sound=section.querySelector('[data-film-sound]');
  const status=section.querySelector('[data-film-status]'),clock=section.querySelector('[data-film-time]');
  let loaded=false,started=false,intent=0,pending=false;
- const active=()=>document.body.dataset.activeSlide==='film10';
+ const active=()=>document.body.dataset.activeSlide==='film10'||window.REPORT_FULLSCREEN?.owns(video);
  const format=value=>{const n=Math.max(0,Math.floor(Number.isFinite(value)?value:0));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')};
  function bilingual(element,zh,en){element.replaceChildren(document.createTextNode(zh));const small=document.createElement('small');small.lang='en';small.textContent=en;element.append(small)}
  function message(zh,en){bilingual(status,zh,en)}
@@ -51,12 +51,7 @@
  video.addEventListener('volumechange',()=>{sync();if(!video.paused)playbackMessage()});
  video.addEventListener('error',()=>{intent++;pending=false;message('影片载入失败，请刷新后重试','THE FILM COULD NOT LOAD · PLEASE REFRESH AND RETRY');sync()});
  fullscreen.addEventListener('click',async()=>{
-  try{
-   if(document.fullscreenElement===screen)await document.exitFullscreen();
-   else if(screen.requestFullscreen)await screen.requestFullscreen();
-   else if(typeof video.webkitEnterFullscreen==='function'){if(!loaded)await play({withSound:true});video.webkitEnterFullscreen()}
-   else message('请使用播放器的全屏按钮','PLEASE USE THE PLAYER FULL-SCREEN BUTTON');
-  }catch{message('请使用播放器的全屏按钮','PLEASE USE THE PLAYER FULL-SCREEN BUTTON')}
+  if(!await window.REPORT_FULLSCREEN.toggle(screen,video))message('请使用播放器的全屏按钮','PLEASE USE THE PLAYER FULL-SCREEN BUTTON');
  });
  window.addEventListener('report:slidechange',()=>{if(!active())pause();else if(started)play()});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else if(active()&&started)play()});

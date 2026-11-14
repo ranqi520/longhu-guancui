@@ -5,11 +5,11 @@
  const dialog=document.querySelector('#scene-image-dialog'),full=document.querySelector('#scene-image-full');
  const score=document.querySelector('#scene-background-music'),startButton=slides[0].querySelector('[data-scene-start]');
  const states=new Map(slides.map(slide=>[slide,{video:slide.querySelector('video'),inView:false,pending:false,intent:0,blocked:false}]));
- let activeKey=window.VERTICAL_REPORT?.inspect().active||location.hash.slice(1)||'',disposed=false,foreground=document.hasFocus();
+ let activeKey=window.VERTICAL_REPORT?.inspect().active||location.hash.slice(1)||'',disposed=false;
  let started=false,userPaused=false,musicEnabled=true,unlocked=false,musicPending=false,musicIntent=0,musicBlocked=false,musicFailed=false;
  score.volume=.48;score.muted=false;
- const visible=()=>!disposed&&foreground&&!document.hidden&&!document.querySelector('dialog[open]');
- const inChapter=()=>activeKey.startsWith('scenes06');
+ const visible=()=>!disposed&&!document.hidden&&!document.querySelector('dialog[open]');
+ const inChapter=()=>activeKey.startsWith('scenes06')||window.REPORT_FULLSCREEN?.chapter()?.startsWith('scenes06');
  // One explicit session starts all four muted animations and their shared audible score.
  const shouldPlay=()=>started&&!userPaused&&inChapter()&&visible();
  const shouldScore=()=>shouldPlay()&&musicEnabled&&!musicFailed;
@@ -54,7 +54,7 @@
   for(const slide of slides){if(shouldPlay())play(slide);else pause(slide);paint(slide);}
  }
  function startSession(){
-  started=true;userPaused=false;foreground=document.hasFocus();musicBlocked=false;
+  started=true;userPaused=false;musicBlocked=false;
   if(musicFailed){musicFailed=false;score.removeAttribute('src');}
   sync();
  }
@@ -75,7 +75,7 @@
    syncMusic();
   });
   // Fullscreen keeps the same custom lower-left controls instead of native video controls.
-  slide.querySelector('[data-scene-video-expand]').addEventListener('click',async()=>{try{const frame=slide.querySelector('.scene-motion-frame');if(frame.requestFullscreen)await frame.requestFullscreen();}catch{}});
+  slide.querySelector('[data-scene-video-expand]').addEventListener('click',()=>window.REPORT_FULLSCREEN.toggle(slide.querySelector('.scene-motion-frame'),video));
   slide.querySelector('[data-scene-enlarge]').addEventListener('click',()=>{
    const image=slide.querySelector('.scene-render-button img');full.src=image.currentSrc||image.src;full.alt=image.alt;
    const title=document.querySelector('#scene-image-title');title.replaceChildren(document.createTextNode(slide.querySelector('.scene-room-nav [aria-pressed="true"]>span:nth-child(2)').firstChild.textContent+' · 空间效果图'));
@@ -88,15 +88,15 @@
  score.addEventListener('error',()=>{musicFailed=true;pauseMusic();});
  document.querySelector('[data-scene-image-close]').addEventListener('click',()=>dialog.close());
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();});
- dialog.addEventListener('close',sync);document.addEventListener('fullscreenchange',sync);
+ dialog.addEventListener('close',sync);window.addEventListener('report:fullscreenchange',sync);
  document.querySelectorAll('[data-scene-target]').forEach(button=>button.addEventListener('click',()=>window.VERTICAL_REPORT.go(button.dataset.sceneTarget)));
- window.addEventListener('report:slidechange',event=>{activeKey=event.detail.key;foreground=document.hasFocus();musicBlocked=false;sync();});
- window.addEventListener('blur',()=>{foreground=false;sync();});
- window.addEventListener('focus',()=>{foreground=true;sync();});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)foreground=document.hasFocus();sync();});
+ window.addEventListener('report:slidechange',event=>{activeKey=event.detail.key;musicBlocked=false;sync();});
+ // Native fullscreen controls can blur the document without hiding it.
+ window.addEventListener('focus',sync);
+ document.addEventListener('visibilitychange',sync);
  for(const modal of document.querySelectorAll('dialog'))new MutationObserver(sync).observe(modal,{attributes:true,attributeFilter:['open']});
  window.addEventListener('pagehide',()=>{disposed=true;sync();});
- window.addEventListener('pageshow',()=>{disposed=false;foreground=document.hasFocus();sync();});
+ window.addEventListener('pageshow',()=>{disposed=false;sync();});
  window.SCENES_REPORT={inspect:()=>({active:activeKey,foreground:visible(),started,userPaused,music:{enabled:musicEnabled,unlocked,paused:score.paused,muted:score.muted,volume:score.volume,blocked:musicBlocked,failed:musicFailed,time:score.currentTime,ready:score.readyState},rooms:slides.map(slide=>{const {video,inView,blocked}=states.get(slide);return{key:slide.dataset.slideId,room:slide.dataset.sceneRoom,paused:video.paused,muted:video.muted,loaded:!!video.getAttribute('src'),ready:video.readyState,time:video.currentTime,duration:Number.isFinite(video.duration)?video.duration:null,userPaused,inView,blocked};})})};
  sync();
 })();
