@@ -10,6 +10,8 @@
  const previous=document.querySelector('#previous-slide'), next=document.querySelector('#next-slide');
  const nightAmbience=window.createNightAmbience({frame});
  let active=-1, scheduled=false, ready=false, lastWheel=0, consumed=false, wheelSum=0, lockedUntil=0, interacting=false;
+ const mobileReport=document.documentElement.dataset.mobileReport==='true';
+ let mobileAnchor=null;
  let resizing=false,layoutHeight=innerHeight,layoutWidth=innerWidth;
  const headerHeight=()=>metrics.header;
  const isDialogOpen=()=>!!document.querySelector('dialog[open]')||embeds.some(embed=>!!embed.contentDocument?.querySelector('dialog[open]'));
@@ -44,17 +46,20 @@
   window.dispatchEvent(new CustomEvent('report:slidechange',{detail:{key,navKey,index}}));
  }
  function updateActive(){
-  scheduled=false;if(resizing||window.REPORT_FULLSCREEN?.active())return;const probe=scrollY+headerHeight()+Math.min((innerHeight-headerHeight())*.4,300);
+  scheduled=false;if(resizing||window.REPORT_FULLSCREEN?.active()||(mobileReport&&innerWidth!==layoutWidth))return;
+  if(mobileReport)metrics.tops=slides.map(slide=>scrollY+slide.getBoundingClientRect().top);
+  const probe=scrollY+headerHeight()+Math.min((innerHeight-headerHeight())*.4,300);
   let index=metrics.tops.findLastIndex(top=>top<=probe);
-  if(index<0)index=0;activate(index);syncModel();
+  if(index<0)index=0;activate(index);if(mobileReport)mobileAnchor={key:slides[index].dataset.slideId,offset:Math.max(-metrics.header,-slides[index].getBoundingClientRect().top)};syncModel();
  }
  function go(key,{instant=false,focus=false}={}){
   if(window.REPORT_FULLSCREEN?.active())return;
+  if(mobileReport)measure();
   const index=slides.findIndex(slide=>slide.dataset.slideId===key);if(index<0)return;
   stopInteractions();if(['02','10'].includes(slides[index].dataset.modelChapter))ensureModel();
   const top=Math.max(0,metrics.tops[index]-headerHeight());
   window.scrollTo({top,behavior:instant||reduced.matches?'instant':'smooth'});
-  if(instant)activate(index);
+  if(instant){activate(index);if(mobileReport)mobileAnchor={key,offset:-headerHeight()};}
   if(focus)document.querySelector('#main-content').focus({preventScroll:true});
  }
  function move(direction){go(slides[Math.max(0,Math.min(slides.length-1,active+direction))].dataset.slideId);}
@@ -89,12 +94,12 @@
  for(const embed of embeds)embed.addEventListener('load',()=>syncModel(true));
  function measure(){metrics.header=document.querySelector('.site-header').getBoundingClientRect().height;metrics.footer=document.querySelector('.site-footer').getBoundingClientRect().height;const compactLandscape=document.documentElement.dataset.mobileReport==='true'&&innerWidth>innerHeight&&innerHeight<=600;const height=Math.max(compactLandscape?170:desktop.matches?520:450,layoutHeight-metrics.header-metrics.footer);document.documentElement.style.setProperty('--slide-height',height+'px');metrics.tops=slides.map(slide=>scrollY+slide.getBoundingClientRect().top);modelLayer.style.top=(metrics.tops[slides.findIndex(slide=>slide.dataset.modelChapter===placedChapter)]-metrics.tops[slides.indexOf(heavySlides[0])])+'px';}
  let resizeTimer,resizeAnchor=null;
- function readingAnchor(){const index=Math.max(active,0);return{key:slides[index].dataset.slideId,offset:-slides[index].getBoundingClientRect().top};}
+ function readingAnchor(){if(mobileReport&&mobileAnchor)return{...mobileAnchor};const index=Math.max(active,0);return{key:slides[index].dataset.slideId,offset:-slides[index].getBoundingClientRect().top};}
  function reflow(anchor){
   if(!anchor)return;clearTimeout(resizeTimer);
   layoutHeight=innerWidth!==layoutWidth||desktop.matches?innerHeight:layoutHeight;layoutWidth=innerWidth;
   measure();const index=slides.findIndex(slide=>slide.dataset.slideId===anchor.key);
-  if(index>=0){const offset=Math.min(anchor.offset,Math.max(-metrics.header,slides[index].offsetHeight-metrics.header-30));window.scrollTo({top:Math.max(0,metrics.tops[index]+offset),behavior:'instant'});activate(index);}
+  if(index>=0){const padding=mobileReport?Math.min((innerHeight-metrics.header)*.4,300)+1:30;let offset=Math.min(anchor.offset,Math.max(-metrics.header,slides[index].offsetHeight-metrics.header-padding));if(mobileReport)offset=Math.max(-metrics.header,offset);window.scrollTo({top:Math.max(0,metrics.tops[index]+offset),behavior:'instant'});activate(index);if(mobileReport)mobileAnchor={key:anchor.key,offset};}
   resizing=false;resizeAnchor=null;syncModel(true);
  }
  window.addEventListener('resize',()=>{

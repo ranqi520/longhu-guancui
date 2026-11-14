@@ -59,7 +59,7 @@
  video.addEventListener('ended',async()=>{
   intent++;pending=false;
   const moveFocus=active()&&screen.contains(document.activeElement)||active()&&section.querySelector('.letter-film-toolbar').contains(document.activeElement);
-  if(document.fullscreenElement===screen){try{await document.exitFullscreen()}catch{}}
+  if(window.REPORT_FULLSCREEN?.owns(video))await window.REPORT_FULLSCREEN.exit();
   setState('signoff');sync();
   live.textContent='设计有终章，生活正开场。 / The design is complete. Life is just beginning.';
   if(moveFocus)requestAnimationFrame(()=>section.querySelector('#closing-signoff-title').focus({preventScroll:true}));

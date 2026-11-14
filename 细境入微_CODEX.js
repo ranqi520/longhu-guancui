@@ -260,7 +260,7 @@
    const n=Number(card.dataset.detailCard),rank=(n-index+count)%count;
    card.hidden=rank>2;card.classList.toggle('is-front',rank===0);card.classList.toggle('is-second',rank===1);card.classList.toggle('is-third',rank===2);card.tabIndex=rank===0?0:-1;
    const d=room.details[n];card.setAttribute('aria-label',room.zh+' · '+d.zh+(rank===0?'，点击查看高清 / '+d.en+'; enlarge detail':'，点击翻至前面 / '+d.en+'; bring detail forward'));
-   if(load&&rank<3)hydrateCard(card);
+   if(load&&rank<3&&(document.documentElement.dataset.mobileReport!=="true"||document.body.dataset.activeSlide===section.dataset.slideId))hydrateCard(card);
   });
   section.querySelectorAll('[data-detail-select]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.detailSelect)===index)));
   section.querySelector('[data-detail-title]').textContent=detail.zh;

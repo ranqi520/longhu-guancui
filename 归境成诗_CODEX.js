@@ -6,7 +6,16 @@
  const overlay=section.querySelector('[data-film-overlay]'),playButton=section.querySelector('[data-film-play]');
  const toggle=section.querySelector('[data-film-toggle]'),fullscreen=section.querySelector('[data-film-fullscreen]'),sound=section.querySelector('[data-film-sound]');
  const status=section.querySelector('[data-film-status]'),clock=section.querySelector('[data-film-time]');
+ const mobile=document.documentElement.dataset.mobileReport==='true';
+ const streamButton=section.querySelector('[data-film-stream]'),quality=section.querySelector('.film-quality');
+ let stream=mobile&&video.dataset.mobileSrc?'mobile':'hd',switching=false;
  let loaded=false,started=false,intent=0,pending=false;
+ const streamSource=()=>stream==='mobile'?video.dataset.mobileSrc:video.dataset.src;
+ function streamLabel(){
+  if(!mobile)return;
+  quality.textContent=(stream==='mobile'?'720P · 流畅 / SMOOTH':'1080P · 高清 / HD');
+  if(streamButton){streamButton.hidden=false;bilingual(streamButton,stream==='mobile'?'切换高清':'切换流畅',stream==='mobile'?'SWITCH TO HD':'SWITCH TO SMOOTH');streamButton.disabled=switching;}
+ }
  const active=()=>document.body.dataset.activeSlide==='film10'||window.REPORT_FULLSCREEN?.owns(video);
  const format=value=>{const n=Math.max(0,Math.floor(Number.isFinite(value)?value:0));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')};
  function bilingual(element,zh,en){element.replaceChildren(document.createTextNode(zh));const small=document.createElement('small');small.lang='en';small.textContent=en;element.append(small)}
@@ -28,7 +37,7 @@
   if(!active()||document.hidden||pending)return;
   const token=++intent;pending=true;
   if(withSound){video.muted=false;if(video.volume===0)video.volume=1}
-  if(!loaded){video.src=video.dataset.src;loaded=true;video.load()}
+  if(!loaded){video.src=streamSource();loaded=true;video.load()}
   if(video.ended)video.currentTime=0;
   video.controls=true;message('影片载入中','LOADING THE FILM');sync();
   try{
@@ -40,6 +49,27 @@
    if(token===intent&&error.name!=='AbortError')message('请点击继续播放影片','PLEASE CLICK TO CONTINUE THE FILM');
   }finally{if(token===intent){pending=false;sync()}}
  }
+ async function switchStream(){
+  if(switching)return;
+  const time=video.currentTime,resumePlayback=!video.paused&&!video.ended,muted=video.muted,volume=video.volume;
+  stream=stream==='mobile'?'hd':'mobile';switching=true;streamLabel();
+  if(!loaded){switching=false;streamLabel();return;}
+  intent++;pending=false;video.pause();
+  try{
+   await new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>done(Error('media metadata timeout')),15000);
+    function done(error){clearTimeout(timer);video.removeEventListener('loadedmetadata',ready);video.removeEventListener('error',failed);error?reject(error):resolve();}
+    function ready(){try{video.currentTime=Math.min(time,Math.max(0,video.duration-.1));done();}catch(error){done(error);}}
+    function failed(){done(Error('media source failed'));}
+    video.addEventListener('loadedmetadata',ready,{once:true});video.addEventListener('error',failed,{once:true});
+    video.src=streamSource();video.load();
+   });
+   video.muted=muted;video.volume=volume;
+   if(resumePlayback&&active()&&!document.hidden)await play();
+  }catch{message('视频切换未完成，请切回流畅版重试','SWITCH INCOMPLETE · TRY SMOOTH MODE');}
+  finally{switching=false;streamLabel();sync();}
+ }
+ streamButton?.addEventListener('click',switchStream);streamLabel();
  playButton.addEventListener('click',()=>play({withSound:true}));
  toggle.addEventListener('click',()=>video.paused||video.ended?play({withSound:true}):pause());
  sound.addEventListener('click',()=>{video.muted=!video.muted;if(video.volume===0&&!video.muted)video.volume=1;sync();if(video.paused)play();else playbackMessage()});
@@ -56,6 +86,6 @@
  window.addEventListener('report:slidechange',()=>{if(!active())pause();else if(started)play()});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else if(active()&&started)play()});
  window.addEventListener('pagehide',pause);
- window.FILM_REPORT={pause,inspect:()=>({active:active(),loaded,started,pending,paused:video.paused,ended:video.ended,time:video.currentTime,duration:Number.isFinite(video.duration)?video.duration:null,width:video.videoWidth,height:video.videoHeight,muted:video.muted,volume:video.volume,preload:video.preload,readyState:video.readyState,src:video.currentSrc||null,fullscreen:document.fullscreenElement===screen})};
+ window.FILM_REPORT={pause,inspect:()=>({mobile,stream,switching,bufferedAhead:video.buffered.length?Math.max(0,video.buffered.end(video.buffered.length-1)-video.currentTime):0,active:active(),loaded,started,pending,paused:video.paused,ended:video.ended,time:video.currentTime,duration:Number.isFinite(video.duration)?video.duration:null,width:video.videoWidth,height:video.videoHeight,muted:video.muted,volume:video.volume,preload:video.preload,readyState:video.readyState,src:video.currentSrc||null,fullscreen:document.fullscreenElement===screen})};
  sync();
 })();
