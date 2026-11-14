@@ -1,0 +1,5 @@
+.report-enlarge-image{cursor:zoom-in}.report-enlarge-image:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+#scene-image-full,#gallery-image{cursor:zoom-out}
+.material-image-viewport{cursor:zoom-out}.material-image-viewport:not(.is-zoomed){touch-action:pan-y pinch-zoom}
+
+.letter-portrait .report-enlarge-image{pointer-events:auto}

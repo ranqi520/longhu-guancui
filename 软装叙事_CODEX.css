@@ -1,0 +1,20 @@
+/* Chapter 08 shares the established board layout and full-detail viewer. */
+body[data-active-slide^="furnishings08"]{--paper:#9e7867;--ink:#1a110d;--muted:#30221b;--rule:#1a110d35;--rust:#1a110d;--material-accent:#e5d1c1}
+html:has(body[data-active-slide^="furnishings08"]){scroll-snap-type:none;scroll-behavior:auto}
+.furnishing-breakdown{display:grid;grid-template-columns:180px minmax(0,1fr);gap:30px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:24px 0 27px}
+.furnishing-breakdown-label{font-size:13px;letter-spacing:.12em;line-height:1.5}
+.furnishing-breakdown-label>small{display:block;font-size:8px;letter-spacing:.07em;margin-top:6px}
+.furnishing-breakdown-label p{font-size:10px;letter-spacing:0;line-height:1.8;margin:18px 0 0}
+.furnishing-breakdown-label p small{display:block;font-size:7px;line-height:1.7;margin-top:4px}
+.furnishing-categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.furnishing-categories button{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--rule);padding:13px 14px;text-align:left;font-size:11px;line-height:1.4;cursor:pointer;min-width:0}
+.furnishing-categories button small{display:block;font-size:7px;letter-spacing:.05em;margin-top:5px;line-height:1.5}
+.furnishing-categories button[aria-pressed="true"]{background:var(--material-accent);border-color:var(--material-accent)}
+.furnishing-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:32px;margin-top:23px;min-height:106px}
+.furnishing-detail h3{margin:0 0 12px;font-size:9px;letter-spacing:.12em;font-weight:400}
+.furnishing-detail h3 small{font-size:7px;letter-spacing:.07em;margin-left:10px}
+.furnishing-detail p{font-size:12px;line-height:1.8;margin:0}
+.furnishing-detail p small{display:block;font-size:9px;line-height:1.7;margin-top:6px}
+@media(min-width:901px) and (max-width:1450px){.vertical-report .main-nav{gap:clamp(9px,1vw,14px)}.vertical-report .site-header{gap:14px}.vertical-report .main-nav .nav-item small{font-size:5px}.vertical-report .brand-name b{font-size:11px}.vertical-report .brand-name small{font-size:5px}}
+@media(max-width:900px){.furnishing-breakdown{grid-template-columns:145px minmax(0,1fr);gap:24px}.furnishing-categories button{padding:12px 9px}.furnishing-detail{gap:24px}}
+@media(max-width:700px){.furnishing-breakdown{grid-template-columns:1fr;gap:17px;padding:19px 0}.furnishing-breakdown-label{font-size:11px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}.furnishing-breakdown-label>small{margin:0;font-size:7px}.furnishing-breakdown-label p{width:100%;margin:5px 0 0;font-size:9px}.furnishing-breakdown-label p small{display:inline;font-size:6px;margin-left:8px}.furnishing-categories{gap:5px}.furnishing-categories button{font-size:10px;padding:10px 7px}.furnishing-categories button small{font-size:5px;letter-spacing:0;min-height:15px}.furnishing-detail{grid-template-columns:1fr;gap:19px;min-height:200px;margin-top:20px}.furnishing-detail p{font-size:11px}.furnishing-detail p small{font-size:8px}.furnishing-detail h3{margin-bottom:7px}}

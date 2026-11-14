@@ -1,0 +1,54 @@
+/* Chapter 03: preserve the white model; its exterior is transparent with champagne callouts. */
+body:has(>main:is([data-chapter="04"],[data-chapter="05"])){--paper:#9e7867;--panel:#e5d1c1;--ink:#1a110d;--muted:#30221b;--line:#1a110d35;--accent:#e5d1c1;color-scheme:light}
+#stage:is([data-chapter="04"],[data-chapter="05"]) #display-settings,#stage:is([data-chapter="04"],[data-chapter="05"]) .view-switch{display:none}
+#stage:is([data-chapter="04"],[data-chapter="05"]) #viewport{left:4%;right:340px;bottom:95px;overflow:hidden}
+#viewport.has-image-circulation>canvas,#viewport.has-image-circulation>.analysis-labels{visibility:hidden;pointer-events:none}
+.image-circulation{position:absolute;inset:0;overflow:hidden;background:var(--paper,#9e7867);color:#e5d1c1;border:0;box-shadow:none}
+.image-circulation[hidden]{display:none}
+.image-plan-stage{position:absolute;inset:15px 10px 40px;display:grid;place-items:center;overflow:hidden}
+.image-plan-board{position:relative;aspect-ratio:2260/1400;transform-origin:center center;flex:none;will-change:transform}
+.image-plan-board>img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
+.image-plan-overlay{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.image-plan-leader-shade,.image-plan-leader{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.image-plan-leader-shade{stroke:#5b3d2e45;stroke-width:2.4px}
+.image-plan-leader{stroke:currentColor;stroke-width:.9px;opacity:.94}
+.image-plan-leader-dot{fill:currentColor;stroke:#73513f;stroke-width:.6px}
+.image-plan-room-cn{font:26px 'Microsoft YaHei',Arial,sans-serif;fill:currentColor;letter-spacing:1.8px}
+.image-plan-room-en{font:13px Arial,sans-serif;fill:currentColor;letter-spacing:1.5px}
+.image-plan-tools{position:absolute;right:17px;bottom:12px;display:flex;align-items:center;gap:5px;color:#e5d1c1}
+.image-plan-tools button{width:30px;height:27px;font:18px Arial,sans-serif;background:transparent;color:#e5d1c1;border:1px solid #e5d1c165;border-radius:2px;cursor:pointer}
+.image-plan-tools button:hover{background:#e5d1c126}
+.image-plan-tools button:focus-visible{outline:2px solid #e5d1c1;outline-offset:2px}
+.image-plan-scale{font:9px Arial,sans-serif;min-width:34px;text-align:right;margin-left:4px}
+.image-circulation.is-interacting .image-plan-stage{cursor:grab;touch-action:none}
+.image-circulation .image-plan-stage.dragging{cursor:grabbing}
+#stage:is([data-chapter="04"],[data-chapter="05"]) .analysis-panel{width:264px}
+#stage:is([data-chapter="04"],[data-chapter="05"]) .layer-chip{border-color:#1a110d25}
+#stage:is([data-chapter="04"],[data-chapter="05"]) .layer-chip[aria-pressed="true"]{background:#e5d1c13d}
+#stage:is([data-chapter="04"],[data-chapter="05"]) .controls-hint{max-width:70%;color:var(--muted)}
+@media(min-width:1800px){#stage:is([data-chapter="04"],[data-chapter="05"]) #viewport{right:375px}#stage:is([data-chapter="04"],[data-chapter="05"]) .analysis-panel{width:290px}}
+@media(min-width:901px) and (max-width:1200px){#stage:is([data-chapter="04"],[data-chapter="05"]) #viewport{right:290px}#stage:is([data-chapter="04"],[data-chapter="05"]) .analysis-panel{width:225px}}
+@media(max-width:900px){
+ .report-embed #stage:is([data-chapter="04"],[data-chapter="05"]) #viewport{left:3%;right:3%;top:164px;bottom:118px;height:auto}
+ #stage:is([data-chapter="04"],[data-chapter="05"]) .analysis-panel{width:auto}
+ .report-embed #stage:is([data-chapter="04"],[data-chapter="05"]) .controls-hint{max-width:none}
+ .image-plan-stage{inset:8px 0 39px}
+ .image-plan-tools{right:11px;bottom:10px}
+ .image-plan-tools button{width:31px;height:29px}
+}
+@media(prefers-reduced-motion:reduce){.image-plan-mover{display:none}}
+/* Chapter 04 reuses the owner’s white model, with independent daylight and air layers. */
+#stage[data-chapter="05"] .environment-coverage{margin-top:16px;padding-top:12px}
+#stage[data-chapter="05"] .environment-coverage>div{grid-template-columns:1fr;gap:9px}
+#stage[data-chapter="05"] .environment-principles>span{display:block;font-size:10px}
+#stage[data-chapter="05"] .environment-principles small{font-size:7px;letter-spacing:.045em}
+.image-environment .image-plan-mover{opacity:.98}
+
+/* Enlarge the live analysis board without flattening its arrows into an image. */
+.plan-image-modal{width:min(96vw,1700px);height:94dvh;max-width:none;max-height:none;padding:18px;border:1px solid #e5d1c175;background:#9e7867;color:#e5d1c1;overflow:hidden;box-sizing:border-box}
+.plan-image-modal[open]{display:flex;flex-direction:column;gap:12px}.plan-image-modal::backdrop{background:#201712dc;backdrop-filter:blur(6px)}
+.plan-image-modal header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex:none;font:14px 'Microsoft YaHei',sans-serif}.plan-image-modal small{display:block;font:8px Arial,sans-serif;letter-spacing:.06em;margin-top:5px}
+.plan-image-modal header button{border:1px solid #e5d1c180;background:transparent;color:inherit;padding:9px 16px;min-height:44px;font-size:11px;cursor:pointer}
+.plan-image-modal-view{position:relative;min-height:0;flex:1;overflow:hidden}.plan-image-modal .image-plan-stage{inset:5px 5px 50px}.plan-image-modal [data-plan-enlarge]{display:none}
+.plan-image-modal>p{flex:none;margin:0;text-align:center;font:10px 'Microsoft YaHei',sans-serif}.plan-image-modal .image-plan-tools button{min-width:40px;min-height:40px}
+@media(max-width:700px){.plan-image-modal{width:100vw;height:100dvh;padding:12px;border:0}.plan-image-modal header{font-size:12px}.plan-image-modal .image-plan-stage{inset:0 0 60px}}

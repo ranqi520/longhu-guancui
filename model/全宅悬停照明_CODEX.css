@@ -1,0 +1,50 @@
+/* Chapter 05 only: shared cocoa background, fixed cutaway, room-led lighting. */
+body:has(>main[data-chapter="10"]),.report-embed body:has(>main[data-chapter="10"]){--paper:#9e7867;--panel:#9e7867;--ink:#1a110d;--muted:#30221b;--line:#1a110d35;--accent:#e5d1c1;background:var(--paper)}
+#stage.night-mode #viewport{background:none;cursor:default}
+#stage.night-mode .view-switch,#stage.night-mode .scene-caption,#stage.night-mode #reset,#stage.night-mode #display-settings,#stage.night-mode .report-interact{display:none}
+#stage.night-mode .quick-actions:before{content:'悬停即亮 / HOVER TO ILLUMINATE';display:block;letter-spacing:.12em;font-size:9px;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:9px}
+#stage.night-mode .intro .eyebrow{color:var(--accent)}
+#stage.night-mode .analysis-panel{top:112px;right:4%;width:264px;max-height:calc(100% - 137px);scrollbar-color:#c9b39b transparent}
+#stage.night-mode .panel-lead{font-size:18px;line-height:1.6;letter-spacing:1.6px}
+#stage.night-mode .panel-lead small{display:block;font-size:10px;letter-spacing:.3px;font-style:italic;font-family:Georgia,serif;color:var(--muted);margin-top:5px}
+.night-instruction{font-size:10px;letter-spacing:.5px;color:var(--muted);margin:14px 0}
+.night-instruction small{display:block;font-size:6px;letter-spacing:.65px;margin-top:5px}
+.night-current{padding:14px 12px;background:#f9e4c70b;border:1px solid var(--line);border-left:2px solid var(--accent);min-height:110px}
+.night-current>span{font-size:13px;letter-spacing:1px}.night-current>small{display:block;font-size:7px;letter-spacing:.5px;color:var(--muted);margin-top:5px}
+.night-current p{font-size:9px;line-height:1.8;letter-spacing:.2px;margin:12px 0 0}.night-current #night-current-note-en{font-size:7px;line-height:1.6;letter-spacing:0}
+.night-room-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:.5px;margin:17px 0 9px}.night-room-heading small{font-size:5px;letter-spacing:.3px;color:var(--muted)}
+.night-room-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.night-room-grid button{min-height:32px;padding:5px 9px;text-align:left;border:1px solid var(--line);background:transparent;transition:background .18s,border-color .18s}
+.night-room-grid button span{display:block;font-size:9px;letter-spacing:.7px}.night-room-grid button small{display:block;font-size:5px;letter-spacing:.4px;color:var(--muted);margin-top:3px}
+.night-room-grid button:hover,.night-room-grid button[aria-pressed="true"]{background:#f5d5a52b;border-color:#f2d3a4}
+#stage.night-mode .night-layer-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:0;gap:5px;margin:16px 0 0}
+#stage.night-mode .night-layer-controls .layer-chip{grid-template-columns:5px 1fr;gap:6px;padding:9px 5px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+#stage.night-mode .night-layer-controls .layer-swatch{width:4px;height:4px;margin-top:4px}
+#stage.night-mode .night-layer-controls strong{font-size:8px;letter-spacing:.3px}.night-layer-controls .layer-chip small{font-size:5px;letter-spacing:.4px}.night-layer-controls .layer-mark{display:none}
+.night-panel-links{display:flex;gap:8px;margin-top:13px}.night-panel-links button{padding:7px 0;flex:1;text-align:left;font-size:8px;letter-spacing:.5px}.night-panel-links small{display:block;font-size:5px;margin-top:4px;letter-spacing:.3px;color:var(--muted)}
+#stage.night-mode .panel-foot{color:var(--muted);font-size:7px;line-height:1.8;margin-top:9px;padding-top:10px}.night-mode .panel-foot small{font-size:6px;line-height:1.6}
+#stage.night-mode .controls-hint{max-width:none;left:4%;right:350px;text-align:center;bottom:25px;font-size:9px;letter-spacing:1px;line-height:1.7}
+#stage.night-mode .controls-hint small{font-size:6px}
+body:has(>main[data-chapter="10"]) .reference-dialog{background:#786859;color:var(--ink)}
+@media(min-width:1800px){#stage.night-mode .analysis-panel{width:290px}#stage.night-mode #viewport{right:365px}}
+@media(max-width:1100px) and (min-width:901px){#stage.night-mode .analysis-panel{width:225px}#stage.night-mode .controls-hint{right:280px}.night-room-heading{display:block}.night-room-heading small{display:block;margin-top:4px}}
+@media(max-width:900px){
+ .report-embed #stage.night-mode .quick-actions{top:103px;left:5%;right:5%;justify-content:space-between}
+ .report-embed #stage.night-mode .quick-actions:before{font-size:8px;border:0;padding:0}
+ .report-embed #stage.night-mode #viewport{top:151px;bottom:106px;right:0;left:0;height:auto}
+ .report-embed #stage.night-mode .analysis-panel{display:none;top:151px;bottom:100px;left:5%;right:5%;width:auto;max-height:none}
+ .report-embed.analysis-open #stage.night-mode .analysis-panel{display:block}
+ .report-embed #stage.night-mode .controls-hint{left:5%;right:5%;bottom:24px;font-size:8px;line-height:1.8}
+ .report-embed #stage.night-mode .controls-hint small{font-size:5px}
+ .report-embed #stage.night-mode .controls-hint:before{content:'轻触空间也可点亮 / TAP A ROOM TO LIGHT IT';display:block;font-size:7px;margin-bottom:5px}
+}
+
+/* No text or tooltips over the model in the lighting chapter. */
+#stage.night-mode .analysis-label,#stage.night-mode .night-hover-label{display:none!important}
+#stage.night-mode .night-current{min-height:94px;padding:10px 12px;background:#e5d1c112}
+#stage.night-mode .night-current p{margin-top:8px}
+#stage.night-mode .night-room-heading{margin-top:12px}
+#stage.night-mode .night-room-grid{gap:4px}
+#stage.night-mode .night-room-grid button{min-height:29px;padding:4px 8px}
+#stage.night-mode .night-room-grid button:hover,#stage.night-mode .night-room-grid button[aria-pressed="true"]{background:#e5d1c126;border-color:#e5d1c1}
+#stage.night-mode .night-layer-controls{margin-top:12px}

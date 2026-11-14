@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "source": "住宅_网页优化_v5_CODEX.glb",
+  "meshes": [
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_叶绿1",
+      "material": "露台_叶绿1",
+      "vertexCount": 161948,
+      "originalIndexCount": 237906,
+      "indexCount": 88158,
+      "byteOffset": 0,
+      "relativeError": 0.0018669579876586795,
+      "elapsedMs": 26
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_叶绿2",
+      "material": "露台_叶绿2",
+      "vertexCount": 166496,
+      "originalIndexCount": 239034,
+      "indexCount": 96258,
+      "byteOffset": 352632,
+      "relativeError": 0.0018023571465164423,
+      "elapsedMs": 15
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_叶绿3",
+      "material": "露台_叶绿3",
+      "vertexCount": 191723,
+      "originalIndexCount": 256134,
+      "indexCount": 108024,
+      "byteOffset": 737664,
+      "relativeError": 0.0019227188313379884,
+      "elapsedMs": 15
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_叶绿4",
+      "material": "露台_叶绿4",
+      "vertexCount": 224398,
+      "originalIndexCount": 331200,
+      "indexCount": 110100,
+      "byteOffset": 1169760,
+      "relativeError": 0.002072271890938282,
+      "elapsedMs": 20
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_叶绿5",
+      "material": "露台_叶绿5",
+      "vertexCount": 199103,
+      "originalIndexCount": 264498,
+      "indexCount": 89436,
+      "byteOffset": 1610160,
+      "relativeError": 0.0019178315997123718,
+      "elapsedMs": 13
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_叶绿6",
+      "material": "露台_叶绿6",
+      "vertexCount": 150035,
+      "originalIndexCount": 211080,
+      "indexCount": 96234,
+      "byteOffset": 1967904,
+      "relativeError": 0.002224454889073968,
+      "elapsedMs": 13
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_白花花心",
+      "material": "露台_白花花心",
+      "vertexCount": 49228,
+      "originalIndexCount": 287232,
+      "indexCount": 69708,
+      "byteOffset": 2352840,
+      "relativeError": 0.0008762730285525322,
+      "elapsedMs": 15
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_奶白花瓣",
+      "material": "露台_奶白花瓣",
+      "vertexCount": 168294,
+      "originalIndexCount": 590844,
+      "indexCount": 119208,
+      "byteOffset": 2631672,
+      "relativeError": 0.001585095888003707,
+      "elapsedMs": 39
+    },
+    {
+      "name": "露台_双视角效果图还原_无顶面__露台_淡紫小花",
+      "material": "露台_淡紫小花",
+      "vertexCount": 60430,
+      "originalIndexCount": 208410,
+      "indexCount": 42432,
+      "byteOffset": 3108504,
+      "relativeError": 0.0010160537203773856,
+      "elapsedMs": 15
+    }
+  ],
+  "generator": "meshoptimizer 0.25 simplifySloppy; interaction-only indices; original restored when idle",
+  "byteLength": 3278232,
+  "data": "PlantInteractionIndices_CODEX.bin"
+}

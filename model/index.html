@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#302d29">
+<title>龙湖观萃 · 空间设计研究 | GUANCUI · SPATIAL DESIGN STUDIES</title>
+<script>if(new URLSearchParams(location.search).get("report")==="1"&&parent!==window)document.documentElement.classList.add("report-embed");</script><link rel="icon" href="data:,"><link rel="stylesheet" href="质感样板_CODEX.css"><link rel="stylesheet" href="汇报嵌入_CODEX.css"><link rel="stylesheet" href="全屋动线白模_CODEX.css"><link rel="stylesheet" href="成图动线分析_CODEX.css">
+<link rel="stylesheet" href="全宅悬停照明_CODEX.css">
+<script type="importmap">{"imports":{"three":"./vendor/build/three.module.js","three/addons/":"./vendor/examples/jsm/","three/examples/jsm/":"./vendor/examples/jsm/","three-mesh-bvh":"./vendor/mesh-bvh.module.js"}}</script>
+<link rel="stylesheet" href="横屏适配_CODEX.css"></head>
+<body>
+<header class="header">
+<a class="brand" href="#model02" aria-label="千慕设计事务所 Qianmu Design Studio"><img src="assets/千慕矢量标志_CODEX.svg" alt="千慕设计事务所 Qianmu Design Studio"><span>千慕设计事务所<small>QIANMU DESIGN STUDIO</small></span></a>
+<div class="project">重庆 · 龙湖观萃<small>CHONGQING · LONGFOR GUANCUI</small></div><div class="edition">121 m²<span>住宅空间 / RESIDENTIAL</span></div>
+</header>
+<main id="stage" data-chapter="04">
+<nav class="chapter-tabs" aria-label="设计章节 Design chapters">
+<button data-chapter="02"><i>02</i><span>空间全景<small>SPATIAL OVERVIEW</small></span></button>
+<button data-chapter="04"><i>03</i><span>空间序列<small>SPATIAL SEQUENCE</small></span></button>
+<button data-chapter="05"><i>05</i><span>光风协同<small>DAYLIGHT & AIRFLOW</small></span></button>
+<button data-chapter="10"><i>10</i><span>夜境光序<small>LAYERED LIGHTING</small></span></button>
+</nav>
+<div class="intro"><p class="eyebrow"><i></i><span id="chapter-eyebrow">设计研究 / DESIGN STUDY</span></p><h1 id="chapter-title">空间序列 · 动线规划</h1><p class="subtitle" id="chapter-subtitle">Spatial Sequence & Circulation</p></div>
+<div class="quick-actions">
+<button id="reset" class="reset">↺ <span>重置视角<small>RESET VIEW</small></span></button>
+<details id="display-settings"><summary>显示设置<small>DISPLAY SETTINGS</small><span class="settings-icon">+</span></summary>
+<div class="mode-panel"><span class="mini-label">画面模式 / DISPLAY MODE</span><div class="segmented"><button id="quality" class="active" aria-pressed="true">参考呈现<span>REFERENCE STYLE</span></button><button id="live" aria-pressed="false">流畅浏览<span>SMOOTH</span></button><button id="basic" aria-pressed="false">原色对照<span>SOURCE</span></button></div><label class="exposure"><span>亮度 <small>BRIGHTNESS</small></span><input id="exposure" type="range" min="0.7" max="1.5" value="1.10" step="0.01" aria-label="亮度 Brightness"></label><div class="render-status"><span id="render-status">模型细节 · 已就绪</span><small id="render-status-en">DETAILED MODEL · READY</small></div></div>
+</details></div>
+<div id="viewport" aria-label="可交互三维住宅模型 Interactive residential model"></div>
+<aside class="analysis-panel" id="analysis-panel" aria-label="分析图层 Analysis layers"></aside>
+<div class="view-switch" aria-label="视角 View"><button data-view="hero" class="active">空间总览<span>OVERVIEW</span></button><button data-view="top">平面俯视<span>TOP PLAN</span></button><button data-view="detail">客餐厅近景<span>LIVING DETAIL</span></button></div>
+<div class="scene-caption"><span id="view-index">01</span><div id="view-caption">三维空间总览<small>SPATIAL OVERVIEW</small></div></div>
+<div class="controls-hint"><span class="desktop-hint">左键旋转 · 右键平移 · 滚轮缩放</span><span class="touch-hint">单指旋转 · 双指平移与缩放</span><small class="desktop-hint">DRAG TO ORBIT · RIGHT DRAG TO PAN · SCROLL TO ZOOM</small><small class="touch-hint">ONE FINGER TO ORBIT · TWO FINGERS TO PAN & ZOOM</small></div>
+<div class="loading" id="loading"><span class="loader"></span><strong id="load-label">正在准备空间</strong><small id="load-en">PREPARING YOUR SPACE</small><div class="load-track"><i id="progress"></i></div></div>
+<div id="error" class="error" hidden><strong>模型暂时未能加载 / UNABLE TO LOAD THE MODEL</strong><p id="error-detail"></p><button onclick="location.reload()">重新加载 / RELOAD</button></div>
+</main>
+<footer><span>设计 · 杨滔<small>DESIGN · YANG TAO</small></span><span>空间设计 · 交互研究<small>SPATIAL DESIGN · INTERACTIVE STUDIES</small></span><span>重庆千慕设计事务所<small>QIANMU DESIGN STUDIO</small></span></footer>
+<script type="module" src="质感样板_CODEX.js"></script>
+</body></html>
