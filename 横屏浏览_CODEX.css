@@ -1,8 +1,15 @@
 /* Native mobile layouts. No orientation lock, rotated frame or touch interception. */
-html[data-mobile-report=true]{scroll-snap-type:none;overflow-anchor:none}
+html[data-mobile-report=true]{scroll-snap-type:none;overflow-anchor:none;overflow-x:hidden;background:#9e7867}
+html[data-mobile-report=true] body.vertical-report{overflow-x:hidden;overflow-x:clip}
+html[data-mobile-report=true] .vertical-report #main-content,html[data-mobile-report=true] .vertical-report .report-page{width:100%;max-width:100%}
 html[data-mobile-report=true] .vertical-report .header-tools .fullscreen-button{display:none}
 html.report-media-fullscreen{scroll-snap-type:none!important}
 html[data-mobile-report=true] .header-tools{gap:8px}
+@media(max-width:360px){
+ html[data-mobile-report=true] .film-slide{grid-template-columns:minmax(0,1fr)}
+ html[data-mobile-report=true] .film-layout{min-width:0}
+ html[data-mobile-report=true] .film-tools{flex-wrap:wrap}
+}
 @media(orientation:landscape) and (max-height:600px){
  html[data-mobile-report=true]{--header-height:65px;--footer-height:28px;scroll-snap-type:none}
  html[data-mobile-report=true] .site-header{height:65px;min-height:65px;padding:2px max(3vw,env(safe-area-inset-left)) 0;display:grid;grid-template-columns:minmax(170px,1fr) auto;gap:0 12px;align-content:start}

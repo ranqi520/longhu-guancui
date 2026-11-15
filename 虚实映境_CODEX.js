@@ -6,7 +6,7 @@
  const score=document.querySelector('#scene-background-music'),startButton=slides[0].querySelector('[data-scene-start]');
  const states=new Map(slides.map(slide=>[slide,{video:slide.querySelector('video'),inView:false,pending:false,intent:0,blocked:false}]));
  const mobile=document.documentElement.dataset.mobileReport==='true';
- let elapsed=0,clockStart=null,scorePosition=0;
+ let elapsed=0,clockStart=null,scorePosition=0,firstFramePending=mobile;
  let activeKey=window.VERTICAL_REPORT?.inspect().active||location.hash.slice(1)||'',disposed=false;
  let started=false,userPaused=false,musicEnabled=true,unlocked=false,musicPending=false,musicIntent=0,musicBlocked=false,musicFailed=false;
  score.volume=.48;score.muted=false;
@@ -33,7 +33,7 @@
  }
  function renderRoom(slide){return !mobile||window.REPORT_FULLSCREEN?.owns(states.get(slide).video)||(!window.REPORT_FULLSCREEN?.active()&&slide.dataset.slideId===activeKey);}
  function sessionTime(){return elapsed+(clockStart===null?0:(performance.now()-clockStart)/1000);}
- function updateClock(){if(shouldPlay()){if(clockStart===null)clockStart=performance.now();}else if(clockStart!==null){elapsed+=(performance.now()-clockStart)/1000;clockStart=null;}}
+ function updateClock(){if(shouldPlay()&&!firstFramePending){if(clockStart===null)clockStart=performance.now();}else if(clockStart!==null){elapsed+=(performance.now()-clockStart)/1000;clockStart=null;}}
  function align(video){if(mobile&&video.readyState>=1&&Number.isFinite(video.duration)&&video.duration>0){const t=sessionTime()%video.duration;if(Math.abs(video.currentTime-t)>.3)video.currentTime=t;}}
  function load(slide){const {video}=states.get(slide);if(!video.getAttribute('src')){video.src=mobile&&video.dataset.mobileSrc?video.dataset.mobileSrc:video.dataset.src;video.load();}}
  function pause(slide){const state=states.get(slide);state.intent++;state.video.pause();
@@ -64,6 +64,8 @@
   // Invoke play in the same trusted click stack; do not await video loading before audio.
   syncMusic();
   for(const slide of slides){if(shouldPlay()&&renderRoom(slide))play(slide);else pause(slide);paint(slide);}
+  // Prepare only the active mobile animation, without playing sound before consent.
+  if(mobile&&inChapter()&&!started&&visible()){const slide=slides.find(renderRoom);if(slide){states.get(slide).video.preload='auto';load(slide);}}
  }
  function startSession(){
   started=true;userPaused=false;musicBlocked=false;
@@ -76,6 +78,7 @@
   const state=states.get(slide),{video}=state;video.muted=true;video.volume=0;video.controls=false;
   observer.observe(video);
   video.addEventListener('loadedmetadata',()=>align(video));
+  video.addEventListener('playing',()=>{if(mobile&&firstFramePending&&shouldPlay()&&renderRoom(slide)){firstFramePending=false;updateClock();}});
   for(const type of ['play','pause','playing','loadedmetadata','durationchange'])video.addEventListener(type,()=>paint(slide));
   video.addEventListener('error',()=>{slide.querySelector('.scene-video-error').hidden=false;paint(slide);});
   slide.querySelector('[data-scene-retry]').addEventListener('click',()=>{slide.querySelector('.scene-video-error').hidden=true;video.src=mobile&&video.dataset.mobileSrc?video.dataset.mobileSrc:video.dataset.src;video.load();startSession();});
